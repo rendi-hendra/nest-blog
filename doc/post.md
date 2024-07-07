@@ -14,8 +14,8 @@ Request Body :
 {
   "title": "Hello World",
   "body": "Hello World",
-  "user_id": 1,
-  "category_id": 1
+  "userId": 1,
+  "categoryId": 1
 }
 ```
 
@@ -27,9 +27,10 @@ Response Body :
     "id": 1,
     "title": "Hello World",
     "body": "Hello World",
-    "user_id": 1,
-    "category_id": 1,
-    "created_at": "datetime"
+    "slug": "hello-world",
+    "userId": 1,
+    "categoryId": 1,
+    "createdAt": "datetime"
   }
 }
 ```
@@ -48,11 +49,12 @@ Response Body :
 {
   "data": {
     "id": 1,
-    "title": "Rendi Hendra",
-    "body": "Syahputra",
-    "user_id": 1,
-    "category_id": 1,
-    "created_at": "datetime"
+    "title": "Hello World",
+    "body": "Hello World",
+    "slug": "hello-world",
+    "userId": 1,
+    "categoryId": 1,
+    "createdAt": "datetime"
   }
 }
 ```
@@ -113,8 +115,8 @@ Headers :
 Query Params :
 
 - title: string, posts title, optional
-- user_id: string, posts author, optional
-- category_id: string, posts author, optional
+- userId: string, posts author, optional
+- categoryId: string, posts author, optional
 - page: number, default 1
 - size: number, default 10
 
@@ -125,19 +127,21 @@ Response Body :
   "data": [
     {
       "id": 1,
-      "title": "Rendi Hendra",
-      "body": "Syahputra",
-      "user_id": 1,
-      "category_id": 1,
-      "created_at": "datetime"
+      "title": "Hello World",
+      "body": "Hello World",
+      "slug": "hello-world",
+      "userId": 1,
+      "categoryId": 1,
+      "createdAt": "datetime"
     },
     {
       "id": 2,
       "title": "Rendi Hendra",
       "body": "Syahputra",
-      "user_id": 1,
-      "category_id": 1,
-      "created_at": "datetime"
+      "slug": "Rendi-Hendra",
+      "userId": 1,
+      "categoryId": 1,
+      "createdAt": "datetime"
     }
   ],
   "paging": {

@@ -37,13 +37,12 @@ model Post {
   title String @db.VarChar(255)
   body String @db.Text
   createdAt DateTime @default(now())
+  slug String @unique
   userId Int
   categoryId Int
 
   user User @relation(fields: [userId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])
-
-  
 
   @@map("posts")
 }
