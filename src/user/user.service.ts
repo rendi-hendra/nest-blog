@@ -3,9 +3,15 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ValidationService } from '../common/validation.service';
 import { Logger } from 'winston';
 import { PrismaService } from '../common/prisma.service';
-import { RegisterUserRequest, UserResponse } from '../model/user.model';
+import {
+  LoginUserRequest,
+  RegisterUserRequest,
+  UserResponse,
+} from '../model/user.model';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt';
+import { v4 as uuid } from 'uuid';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -37,8 +43,57 @@ export class UserService {
     });
 
     return {
-      email: user.email,
       name: user.name,
+      email: user.email,
+    };
+  }
+
+  async login(request: LoginUserRequest): Promise<UserResponse> {
+    this.logger.debug(`UserService.login(${JSON.stringify(request)})`);
+    const loginRequest: LoginUserRequest = this.validationService.validate(
+      UserValidation.LOGIN,
+      request,
+    );
+
+    // eslint-disable-next-line prefer-const
+    let user = await this.prismaService.user.findUnique({
+      where: {
+        email: loginRequest.email,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('Email or Password is invalid', 401);
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      loginRequest.password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new HttpException('Email or Password is invalid', 401);
+    }
+
+    user = await this.prismaService.user.update({
+      where: {
+        email: loginRequest.email,
+      },
+      data: {
+        token: uuid(),
+      },
+    });
+    return {
+      name: user.name,
+      email: user.email,
+      token: user.token,
+    };
+  }
+
+  async get(user: User): Promise<UserResponse> {
+    return {
+      name: user.name,
+      email: user.email,
     };
   }
 }

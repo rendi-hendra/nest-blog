@@ -55,8 +55,8 @@ describe('UserController', () => {
       logger.info(response.body);
 
       expect(response.status).toBe(200);
-      expect(response.body.data.email).toBe('test@example.com');
       expect(response.body.data.name).toBe('test');
+      expect(response.body.data.email).toBe('test@example.com');
     });
 
     it('should be rejected if email already exists', async () => {
@@ -73,6 +73,74 @@ describe('UserController', () => {
 
       expect(response.status).toBe(400);
       expect(response.body.errors).toBeDefined();
+    });
+  });
+
+  //   Login
+  describe('POST /api/users/login', () => {
+    beforeEach(async () => {
+      await testService.deleteAll();
+      await testService.createUser();
+    });
+    it('should be rejected if request is invalid', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/api/users/login')
+        .send({
+          email: '',
+          password: '',
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(400);
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be able to login', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/api/users/login')
+        .send({
+          email: 'test@example.com',
+          password: 'test',
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.name).toBe('test');
+      expect(response.body.data.email).toBe('test@example.com');
+      expect(response.body.data.token).toBeDefined();
+    });
+  });
+
+  //   GET Current
+
+  describe('GET /api/users/current', () => {
+    beforeEach(async () => {
+      await testService.deleteAll();
+      await testService.createUser();
+    });
+    it('should be rejected if token is invalid', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/users/current')
+        .set('Authorization', 'wrong');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(401);
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be able to get user', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/users/current')
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.name).toBe('test');
+      expect(response.body.data.email).toBe('test@example.com');
     });
   });
 });

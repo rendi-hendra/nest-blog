@@ -18,13 +18,6 @@ export class TestService {
       },
     });
   }
-  async deletePosts() {
-    await this.prismaService.post.deleteMany({
-      where: {
-        title: 'test',
-      },
-    });
-  }
 
   async createUser() {
     await this.prismaService.user.create({
@@ -33,6 +26,14 @@ export class TestService {
         email: 'test@example.com',
         password: await bcrypt.hash('test', 10),
         token: 'test',
+      },
+    });
+  }
+
+  async deletePosts() {
+    await this.prismaService.post.deleteMany({
+      where: {
+        title: 'test',
       },
     });
   }
