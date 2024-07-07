@@ -4,14 +4,14 @@ export class PostResponse {
   body: string;
   slug: string;
   userId: number;
+  author: string;
   categoryId: number;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export class CreatePostRequest {
   title: string;
   body: string;
-  slug: string;
   categoryId: number;
 }
 

@@ -6,6 +6,8 @@ import { Logger } from 'winston';
 import { Post, User } from '@prisma/client';
 import { CreatePostRequest, PostResponse } from 'src/model/post.model';
 import { PostValidation } from './post.validation';
+import slugify from 'slugify';
+import * as moment from 'moment';
 
 @Injectable()
 export class PostService {
@@ -24,25 +26,48 @@ export class PostService {
       request,
     );
 
+    // Generate initial slug from title
+    let slug = slugify(createRequest.title, { lower: true });
+
+    // Ensure slug is unique
+    let counter = 1;
+    let slugExists = await this.prismaService.post.findUnique({
+      where: { slug },
+    });
+
+    while (slugExists) {
+      slug = `${slugify(createRequest.title, { lower: true })}-${counter}`;
+      slugExists = await this.prismaService.post.findUnique({
+        where: { slug },
+      });
+      counter++;
+    }
+
+    moment.locale('id');
+    const createdAt = moment().format('MMMM Do YYYY, h:mm:ss');
     const post = await this.prismaService.post.create({
       data: {
         ...createRequest,
+        slug,
         ...{ userId: user.id },
+        createdAt,
       },
+      include: { user: true },
     });
 
     return this.toPostResponse(post);
   }
 
-  toPostResponse(post: Post): PostResponse {
+  toPostResponse(post: Post & { user: User }): PostResponse {
     return {
+      id: post.id,
       title: post.title,
       body: post.body,
       slug: post.slug,
       userId: post.userId,
+      author: post.user.name,
       categoryId: post.categoryId,
       createdAt: post.createdAt,
-      id: post.id,
     };
   }
 }

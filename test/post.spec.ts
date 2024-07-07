@@ -53,9 +53,8 @@ describe('UserController', () => {
         .post('/api/posts')
         .set('Authorization', 'test')
         .send({
-          title: 'test',
+          title: 'hello world',
           body: 'test',
-          slug: 'test',
           categoryId: 1,
         });
 
@@ -63,9 +62,9 @@ describe('UserController', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.data.id).toBeDefined();
-      expect(response.body.data.title).toBe('test');
+      expect(response.body.data.title).toBe('hello world');
       expect(response.body.data.body).toBe('test');
-      expect(response.body.data.slug).toBe('test');
+      expect(response.body.data.slug).toBe('hello-world');
       expect(response.body.data.categoryId).toBe(1);
     });
   });

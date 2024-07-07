@@ -27,9 +27,11 @@
     "@types/cors": "^2.8.17",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
+    "moment": "^2.30.1",
     "nest-winston": "^1.10.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "slugify": "^1.6.6",
     "uuid": "^9.0.1",
     "zod": "^3.23.8"
   },

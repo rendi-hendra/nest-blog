@@ -42,7 +42,7 @@ export class TestService {
   async deletePosts() {
     await this.prismaService.post.deleteMany({
       where: {
-        title: 'test',
+        body: 'test',
       },
     });
   }

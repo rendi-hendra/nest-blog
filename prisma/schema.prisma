@@ -36,7 +36,7 @@ model Post {
   id Int @id @default(autoincrement())
   title String @db.VarChar(255)
   body String @db.Text
-  createdAt DateTime @default(now())
+  createdAt String
   slug String @unique
   userId Int
   categoryId Int
