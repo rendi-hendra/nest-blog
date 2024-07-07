@@ -6,6 +6,7 @@ import { PrismaService } from '../common/prisma.service';
 import {
   LoginUserRequest,
   RegisterUserRequest,
+  UpdateUserRequest,
   UserResponse,
 } from '../model/user.model';
 import { UserValidation } from './user.validation';
@@ -94,6 +95,52 @@ export class UserService {
     return {
       name: user.name,
       email: user.email,
+    };
+  }
+
+  async update(user: User, request: UpdateUserRequest): Promise<UserResponse> {
+    this.logger.debug(
+      `UserService.update( ${JSON.stringify(user)} , ${JSON.stringify(request)} )`,
+    );
+
+    const updateRequest: UpdateUserRequest = this.validationService.validate(
+      UserValidation.UPDATE,
+      request,
+    );
+
+    if (updateRequest.name) {
+      user.name = updateRequest.name;
+    }
+
+    if (updateRequest.password) {
+      user.password = await bcrypt.hash(updateRequest.password, 10);
+    }
+
+    const result = await this.prismaService.user.update({
+      where: {
+        email: user.email,
+      },
+      data: user,
+    });
+
+    return {
+      name: result.name,
+      email: result.email,
+    };
+  }
+
+  async logout(user: User): Promise<UserResponse> {
+    const result = await this.prismaService.user.update({
+      where: {
+        email: user.email,
+      },
+      data: {
+        token: null,
+      },
+    });
+    return {
+      name: result.name,
+      email: result.email,
     };
   }
 }
