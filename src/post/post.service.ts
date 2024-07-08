@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { ValidationService } from '../common/validation.service';
 import { PrismaService } from '../common/prisma.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -69,5 +69,29 @@ export class PostService {
       categoryId: post.categoryId,
       createdAt: post.createdAt,
     };
+  }
+
+  async get(user: User): Promise<PostResponse[]> {
+    const post = await this.prismaService.post.findMany({
+      where: {
+        userId: user.id,
+      },
+      include: { user: true },
+    });
+
+    return post.map((post) => this.toPostResponse(post));
+  }
+
+  async getBySlug(slug: string): Promise<PostResponse> {
+    const post = await this.prismaService.post.findUnique({
+      where: { slug },
+      include: { user: true },
+    });
+
+    if (!post) {
+      throw new HttpException('Post not found!', 404);
+    }
+
+    return this.toPostResponse(post);
   }
 }
