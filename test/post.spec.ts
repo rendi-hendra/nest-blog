@@ -81,4 +81,69 @@ describe('UserController', () => {
       expect(response.body.data[0].author).toBe('Rendi Hendra S');
     });
   });
+
+  // UPDATE POST
+
+  describe('PACTH /api/post/current/:postId', () => {
+    beforeEach(async () => {
+      await testService.deleteAll();
+
+      await testService.createUser();
+      await testService.createPost();
+    });
+
+    it('should be rejected if request is invalid', async () => {
+      const post = await testService.getPost();
+      const response = await request(app.getHttpServer())
+        .patch(`/api/posts/current/${post.id}`)
+        .set('Authorization', 'test')
+        .send({
+          title: '',
+          body: '',
+          categoryId: '',
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(400);
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be rejected if post is not found', async () => {
+      const post = await testService.getPost();
+      const response = await request(app.getHttpServer())
+        .patch(`/api/posts/current/${post.id + 1}`)
+        .set('Authorization', 'test')
+        .send({
+          title: 'test post',
+          body: 'test',
+          categoryId: 1,
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(404);
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be able to update contact', async () => {
+      const post = await testService.getPost();
+      const response = await request(app.getHttpServer())
+        .patch(`/api/posts/current/${post.id}`)
+        .set('Authorization', 'test')
+        .send({
+          title: 'test updated',
+          body: 'test',
+          categoryId: 1,
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.id).toBeDefined();
+      expect(response.body.data.title).toBe('test updated');
+      expect(response.body.data.body).toBe('test');
+      expect(response.body.data.categoryId).toBe(1);
+    });
+  });
 });

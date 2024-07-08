@@ -4,7 +4,11 @@ import { PrismaService } from '../common/prisma.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { Category, Post, User } from '@prisma/client';
-import { CreatePostRequest, PostResponse } from 'src/model/post.model';
+import {
+  CreatePostRequest,
+  PostResponse,
+  UpdatePostRequest,
+} from 'src/model/post.model';
 import { PostValidation } from './post.validation';
 import slugify from 'slugify';
 import * as moment from 'moment';
@@ -119,5 +123,76 @@ export class PostService {
     });
 
     return post.map((post) => this.toPostResponse(post));
+  }
+
+  async update(user: User, request: UpdatePostRequest): Promise<PostResponse> {
+    // eslint-disable-next-line prefer-const
+    let updateRequest = this.validationService.validate(
+      PostValidation.UPDATE,
+      request,
+    );
+
+    let post = await this.prismaService.post.findFirst({
+      where: {
+        id: request.id,
+        userId: user.id,
+      },
+      include: {
+        user: true,
+        category: true,
+      },
+    });
+
+    if (!post) {
+      throw new HttpException('Post is not found', 404);
+    }
+
+    if (request.categoryId) {
+      const category = await this.prismaService.category.findFirst({
+        where: {
+          id: request.categoryId,
+        },
+      });
+
+      if (!category) {
+        throw new HttpException('CategoryId is not found', 404);
+      }
+    }
+
+    if (request.title) {
+      // Generate initial slug from title
+      let slug = slugify(updateRequest.title, { lower: true });
+
+      // Ensure slug is unique
+      let counter = 1;
+      let slugExists = await this.prismaService.post.findUnique({
+        where: { slug },
+      });
+
+      while (slugExists) {
+        slug = `${slugify(updateRequest.title, { lower: true })}-${counter}`;
+        slugExists = await this.prismaService.post.findUnique({
+          where: { slug },
+        });
+        counter++;
+      }
+
+      updateRequest.slug = slug;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    post = await this.prismaService.post.update({
+      where: {
+        id: post.id,
+        userId: user.id,
+      },
+      include: {
+        user: true,
+        category: true,
+      },
+      data: updateRequest,
+    });
+
+    return this.toPostResponse(post);
   }
 }

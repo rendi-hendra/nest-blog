@@ -39,6 +39,28 @@ export class TestService {
     });
   }
 
+  async createPost() {
+    const user = await this.getUser();
+    await this.prismaService.post.create({
+      data: {
+        title: 'Test post',
+        body: 'test',
+        slug: 'test-post',
+        userId: user.id,
+        categoryId: 1,
+        createdAt: 'test',
+      },
+    });
+  }
+
+  async getPost() {
+    return await this.prismaService.post.findFirst({
+      where: {
+        body: 'test',
+      },
+    });
+  }
+
   async deletePosts() {
     await this.prismaService.post.deleteMany({
       where: {

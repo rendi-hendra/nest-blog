@@ -1,8 +1,21 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { Auth } from '../common/auth.decorator';
 import { User } from '@prisma/client';
-import { CreatePostRequest, PostResponse } from '../model/post.model';
+import {
+  CreatePostRequest,
+  PostResponse,
+  UpdatePostRequest,
+} from '../model/post.model';
 import { WebResponse } from '../model/web.model';
 
 @Controller('/api/posts')
@@ -49,6 +62,19 @@ export class PostController {
     @Param('author') author: string,
   ): Promise<WebResponse<PostResponse[]>> {
     const result = await this.postsService.getByAuthor(author);
+    return {
+      data: result,
+    };
+  }
+  @Patch('/current/:postId')
+  @HttpCode(200)
+  async update(
+    @Auth() user: User,
+    @Param('postId', ParseIntPipe) postId: number,
+    @Body() request: UpdatePostRequest,
+  ): Promise<WebResponse<PostResponse>> {
+    request.id = postId;
+    const result = await this.postsService.update(user, request);
     return {
       data: result,
     };

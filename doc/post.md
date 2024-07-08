@@ -142,7 +142,7 @@ Response Body :
 
 ## Update Posts
 
-Endpoint : PUT /api/posts/:postsId
+Endpoint : PACTH /api/posts/current/:postsId
 
 Headers :
 
@@ -152,8 +152,8 @@ Request Body :
 
 ```json
 {
-  "title": "Rendi Hendra",
-  "body": "Syahputra"
+  "title": "Ini Post Kedua Aku Updated",
+  "body": "Hallo ini post kedua saya Updated"
 }
 ```
 
@@ -162,9 +162,15 @@ Response Body :
 ```json
 {
   "data": {
-    "id": 1,
-    "title": "Rendi Hendra",
-    "body": "Syahputra"
+    "id": 32,
+    "title": "Ini Post Kedua Aku Updated",
+    "body": "Hallo ini post kedua saya Updated",
+    "slug": "ini-post-kedua-aku-updated",
+    "userId": 136,
+    "author": "Rendi Hendra S",
+    "categoryId": 2,
+    "category": "Teknologi",
+    "createdAt": "Juli 8 2024, 9:09:38"
   }
 }
 ```
