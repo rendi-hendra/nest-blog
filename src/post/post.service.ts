@@ -195,4 +195,30 @@ export class PostService {
 
     return this.toPostResponse(post);
   }
+
+  async remove(user: User, postId: number): Promise<PostResponse> {
+    const checkPost = await this.prismaService.post.findFirst({
+      where: {
+        id: postId,
+        userId: user.id,
+      },
+    });
+
+    if (!checkPost) {
+      throw new HttpException('Post is not found', 404);
+    }
+
+    const post = await this.prismaService.post.delete({
+      where: {
+        id: postId,
+        userId: user.id,
+      },
+      include: {
+        user: true,
+        category: true,
+      },
+    });
+
+    return this.toPostResponse(post);
+  }
 }

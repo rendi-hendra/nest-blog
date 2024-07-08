@@ -146,4 +146,38 @@ describe('UserController', () => {
       expect(response.body.data.categoryId).toBe(1);
     });
   });
+
+  // DELETE POST
+  describe('DELETE /api/post/current/:postId', () => {
+    beforeEach(async () => {
+      await testService.deleteAll();
+
+      await testService.createUser();
+      await testService.createPost();
+    });
+
+    it('should be rejected if post is not found', async () => {
+      const post = await testService.getPost();
+      const response = await request(app.getHttpServer())
+        .delete(`/api/posts/current/${post.id + 1}`)
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(404);
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be able to remove post', async () => {
+      const post = await testService.getPost();
+      const response = await request(app.getHttpServer())
+        .delete(`/api/posts/current/${post.id}`)
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data).toBe(true);
+    });
+  });
 });

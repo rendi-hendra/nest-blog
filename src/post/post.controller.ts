@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -77,6 +78,18 @@ export class PostController {
     const result = await this.postsService.update(user, request);
     return {
       data: result,
+    };
+  }
+
+  @Delete('/current/:postId')
+  @HttpCode(200)
+  async remove(
+    @Auth() user: User,
+    @Param('postId', ParseIntPipe) postId: number,
+  ): Promise<WebResponse<boolean>> {
+    await this.postsService.remove(user, postId);
+    return {
+      data: true,
     };
   }
 }

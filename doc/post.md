@@ -177,7 +177,7 @@ Response Body :
 
 ## Remove Posts
 
-Endpoint : DELETE /api/posts/:postsId
+Endpoint : DELETE /api/posts/current/:postsId
 
 Headers :
 
