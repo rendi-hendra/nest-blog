@@ -68,4 +68,17 @@ describe('UserController', () => {
       expect(response.body.data.categoryId).toBe(1);
     });
   });
+
+  describe('GET /api/posts/author/:author', () => {
+    it('should be get by author', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/posts/author/Rendi Hendra S')
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data[0].author).toBe('Rendi Hendra S');
+    });
+  });
 });

@@ -101,6 +101,45 @@ Response Body :
 }
 ```
 
+## Get by Author Posts
+
+Endpoint : GET /api/posts/author/:author
+
+Headers :
+
+- Authorization: token
+
+Response Body :
+
+```json
+{
+  "data": [
+    {
+      "id": 30,
+      "title": "Ini Post Pertama Aku",
+      "body": "Perkenalkan nama saya Rendi hendra s.",
+      "slug": "ini-post-pertama-aku",
+      "userId": 136,
+      "author": "Rendi Hendra S",
+      "categoryId": 1,
+      "category": "Komedi",
+      "createdAt": "Juli 8 2024, 4:41:01"
+    },
+    {
+      "id": 32,
+      "title": "Ini Post Kedua Aku",
+      "body": "Hallo ini post kedua saya",
+      "slug": "ini-post-kedua-aku",
+      "userId": 136,
+      "author": "Rendi Hendra S",
+      "categoryId": 1,
+      "category": "Komedi",
+      "createdAt": "Juli 8 2024, 9:09:38"
+    }
+  ]
+}
+```
+
 ## Update Posts
 
 Endpoint : PUT /api/posts/:postsId

@@ -106,4 +106,18 @@ export class PostService {
 
     return this.toPostResponse(post);
   }
+
+  async getByAuthor(author: string): Promise<PostResponse[]> {
+    const post = await this.prismaService.post.findMany({
+      where: {
+        user: { name: author },
+      },
+      include: {
+        user: true,
+        category: true,
+      },
+    });
+
+    return post.map((post) => this.toPostResponse(post));
+  }
 }

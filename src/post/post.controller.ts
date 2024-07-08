@@ -41,4 +41,16 @@ export class PostController {
       data: result,
     };
   }
+
+  @Get('/author/:author')
+  @HttpCode(200)
+  async getByAuthor(
+    @Auth() user: User,
+    @Param('author') author: string,
+  ): Promise<WebResponse<PostResponse[]>> {
+    const result = await this.postsService.getByAuthor(author);
+    return {
+      data: result,
+    };
+  }
 }
