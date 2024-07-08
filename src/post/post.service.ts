@@ -3,7 +3,7 @@ import { ValidationService } from '../common/validation.service';
 import { PrismaService } from '../common/prisma.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-import { Post, User } from '@prisma/client';
+import { Category, Post, User } from '@prisma/client';
 import { CreatePostRequest, PostResponse } from 'src/model/post.model';
 import { PostValidation } from './post.validation';
 import slugify from 'slugify';
@@ -52,13 +52,18 @@ export class PostService {
         ...{ userId: user.id },
         createdAt,
       },
-      include: { user: true },
+      include: {
+        user: true,
+        category: true,
+      },
     });
 
     return this.toPostResponse(post);
   }
 
-  toPostResponse(post: Post & { user: User }): PostResponse {
+  toPostResponse(
+    post: Post & { user: User; category: Category },
+  ): PostResponse {
     return {
       id: post.id,
       title: post.title,
@@ -67,6 +72,7 @@ export class PostService {
       userId: post.userId,
       author: post.user.name,
       categoryId: post.categoryId,
+      category: post.category.name,
       createdAt: post.createdAt,
     };
   }
@@ -76,7 +82,10 @@ export class PostService {
       where: {
         userId: user.id,
       },
-      include: { user: true },
+      include: {
+        user: true,
+        category: true,
+      },
     });
 
     return post.map((post) => this.toPostResponse(post));
@@ -85,7 +94,10 @@ export class PostService {
   async getBySlug(slug: string): Promise<PostResponse> {
     const post = await this.prismaService.post.findUnique({
       where: { slug },
-      include: { user: true },
+      include: {
+        user: true,
+        category: true,
+      },
     });
 
     if (!post) {

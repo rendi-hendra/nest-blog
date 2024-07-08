@@ -12,9 +12,8 @@ Request Body :
 
 ```json
 {
-  "title": "Hello World",
-  "body": "Hello World",
-  "userId": 1,
+  "title": "Ini Post Pertama Aku",
+  "body": "Perkenalkan nama saya Rendi hendra s.",
   "categoryId": 1
 }
 ```
@@ -24,20 +23,61 @@ Response Body :
 ```json
 {
   "data": {
-    "id": 1,
-    "title": "Hello World",
-    "body": "Hello World",
-    "slug": "hello-world",
-    "userId": 1,
+    "id": 30,
+    "title": "Ini Post Pertama Aku",
+    "body": "Perkenalkan nama saya Rendi hendra s.",
+    "slug": "ini-post-pertama-aku",
+    "userId": 136,
+    "author": "Rendi Hendra S",
     "categoryId": 1,
-    "createdAt": "datetime"
+    "category": "Komedi",
+    "createdAt": "Juli 8 2024, 4:41:01"
   }
 }
 ```
 
-## Get Posts
+## Get Current Posts
 
-Endpoint : GET /api/posts/:postsId
+Endpoint : GET /api/posts/current
+
+Headers :
+
+- Authorization: token
+
+Response Body :
+
+```json
+{
+  "data": [
+    {
+      "id": 27,
+      "title": "hello world",
+      "body": "test",
+      "slug": "hello-world",
+      "userId": 135,
+      "author": "test",
+      "categoryId": 1,
+      "category": "Komedi",
+      "createdAt": "Juli 8 2024, 4:29:50"
+    },
+    {
+      "id": 28,
+      "title": "hello world",
+      "body": "test",
+      "slug": "hello-world-1",
+      "userId": 135,
+      "author": "test",
+      "categoryId": 1,
+      "category": "Komedi",
+      "createdAt": "Juli 8 2024, 4:36:16"
+    }
+  ]
+}
+```
+
+## Get by Slug Posts
+
+Endpoint : GET /api/posts/slug/:slug
 
 Headers :
 
@@ -48,13 +88,15 @@ Response Body :
 ```json
 {
   "data": {
-    "id": 1,
-    "title": "Hello World",
-    "body": "Hello World",
-    "slug": "hello-world",
-    "userId": 1,
+    "id": 30,
+    "title": "Ini Post Pertama Aku",
+    "body": "Perkenalkan nama saya Rendi hendra s.",
+    "slug": "ini-post-pertama-aku",
+    "userId": 136,
+    "author": "Rendi Hendra S",
     "categoryId": 1,
-    "createdAt": "datetime"
+    "category": "Komedi",
+    "createdAt": "Juli 8 2024, 4:41:01"
   }
 }
 ```

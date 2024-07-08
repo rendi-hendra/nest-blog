@@ -6,6 +6,7 @@ export class PostResponse {
   userId: number;
   author: string;
   categoryId: number;
+  category: string;
   createdAt: string;
 }
 
