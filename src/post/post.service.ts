@@ -50,7 +50,7 @@ export class PostService {
     }
 
     moment.locale('id');
-    const createdAt = moment().format('MMMM Do YYYY, h:mm:ss');
+    const createdAt = moment().format('MMMM Do YYYY, HH:mm:ss');
     const post = await this.prismaService.post.create({
       data: {
         ...createRequest,
@@ -80,6 +80,7 @@ export class PostService {
       categoryId: post.categoryId,
       category: post.category.name,
       createdAt: post.createdAt,
+      updateAt: post.updateAt,
     };
   }
 
@@ -181,6 +182,10 @@ export class PostService {
 
       updateRequest.slug = slug;
     }
+
+    moment.locale('id');
+    const updateAt = moment().format('MMMM Do YYYY, HH:mm:ss');
+    updateRequest.updateAt = updateAt;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     post = await this.prismaService.post.update({

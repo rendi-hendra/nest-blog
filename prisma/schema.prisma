@@ -36,10 +36,11 @@ model Post {
   id Int @id @default(autoincrement())
   title String @db.VarChar(255)
   body String @db.Text
-  createdAt String
   slug String @unique
   userId Int
   categoryId Int
+  createdAt String
+  updateAt String?
 
   user User @relation(fields: [userId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])

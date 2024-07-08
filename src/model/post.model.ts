@@ -8,6 +8,7 @@ export class PostResponse {
   categoryId: number;
   category: string;
   createdAt: string;
+  updateAt?: string;
 }
 
 export class CreatePostRequest {
