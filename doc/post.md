@@ -202,8 +202,8 @@ Headers :
 Query Params :
 
 - title: string, posts title, optional
-- userId: string, posts author, optional
-- categoryId: string, posts author, optional
+- author: string, posts author, optional
+- category: string, posts category, optional
 - page: number, default 1
 - size: number, default 10
 
@@ -213,28 +213,32 @@ Response Body :
 {
   "data": [
     {
-      "id": 1,
-      "title": "Hello World",
-      "body": "Hello World",
-      "slug": "hello-world",
-      "userId": 1,
+      "id": 30,
+      "title": "Ini Post Pertama Aku",
+      "body": "Perkenalkan nama saya Rendi hendra s.",
+      "slug": "ini-post-pertama-aku",
+      "userId": 136,
+      "author": "Rendi Hendra S",
       "categoryId": 1,
-      "createdAt": "datetime"
+      "category": "Komedi",
+      "createdAt": "Juli 8 2024, 4:41:01"
     },
     {
-      "id": 2,
-      "title": "Rendi Hendra",
-      "body": "Syahputra",
-      "slug": "Rendi-Hendra",
-      "userId": 1,
-      "categoryId": 1,
-      "createdAt": "datetime"
+      "id": 32,
+      "title": "Ini Post Kedua Aku Updated",
+      "body": "Hallo ini post kedua saya Updated",
+      "slug": "ini-post-kedua-aku-updated",
+      "userId": 136,
+      "author": "Rendi Hendra S",
+      "categoryId": 2,
+      "category": "Teknologi",
+      "createdAt": "Juli 8 2024, 9:09:38"
     }
   ],
   "paging": {
     "current_page": 1,
-    "total_page": 10,
-    "size": 10
+    "size": 10,
+    "total_page": 1
   }
 }
 ```

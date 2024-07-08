@@ -7,11 +7,13 @@ import { Category, Post, User } from '@prisma/client';
 import {
   CreatePostRequest,
   PostResponse,
+  SearchPostRequest,
   UpdatePostRequest,
 } from 'src/model/post.model';
 import { PostValidation } from './post.validation';
 import slugify from 'slugify';
 import * as moment from 'moment';
+import { WebResponse } from '../model/web.model';
 
 @Injectable()
 export class PostService {
@@ -220,5 +222,77 @@ export class PostService {
     });
 
     return this.toPostResponse(post);
+  }
+
+  async search(
+    user: User,
+    request: SearchPostRequest,
+  ): Promise<WebResponse<PostResponse[]>> {
+    const searchRequest: SearchPostRequest = this.validationService.validate(
+      PostValidation.SEARCH,
+      request,
+    );
+
+    const filters = [];
+
+    if (searchRequest.title) {
+      // add title filter
+      filters.push({
+        title: {
+          contains: searchRequest.title,
+        },
+      });
+    }
+
+    if (searchRequest.author) {
+      // add author filter
+      filters.push({
+        user: {
+          name: {
+            contains: searchRequest.author,
+          },
+        },
+      });
+    }
+
+    if (searchRequest.category) {
+      // add category filter
+      filters.push({
+        category: {
+          name: {
+            contains: searchRequest.category,
+          },
+        },
+      });
+    }
+
+    const skip = (searchRequest.page - 1) * searchRequest.size;
+
+    const post = await this.prismaService.post.findMany({
+      where: {
+        AND: filters,
+      },
+      include: {
+        user: true,
+        category: true,
+      },
+      take: searchRequest.size,
+      skip: skip,
+    });
+
+    const total = await this.prismaService.post.count({
+      where: {
+        AND: filters,
+      },
+    });
+
+    return {
+      data: post.map((post) => this.toPostResponse(post)),
+      paging: {
+        current_page: searchRequest.page,
+        size: searchRequest.size,
+        total_page: Math.ceil(total / searchRequest.size),
+      },
+    };
   }
 }

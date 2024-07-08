@@ -22,3 +22,11 @@ export class UpdatePostRequest {
   body?: string;
   categoryId?: number;
 }
+
+export class SearchPostRequest {
+  title?: string;
+  author?: string;
+  category?: string;
+  page: number;
+  size: number;
+}

@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { Auth } from '../common/auth.decorator';
@@ -15,6 +16,7 @@ import { User } from '@prisma/client';
 import {
   CreatePostRequest,
   PostResponse,
+  SearchPostRequest,
   UpdatePostRequest,
 } from '../model/post.model';
 import { WebResponse } from '../model/web.model';
@@ -91,5 +93,25 @@ export class PostController {
     return {
       data: true,
     };
+  }
+
+  @Get()
+  @HttpCode(200)
+  async search(
+    @Auth() user: User,
+    @Query('title') title?: string,
+    @Query('author') author?: string,
+    @Query('category') category?: string,
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('size', new ParseIntPipe({ optional: true })) size?: number,
+  ): Promise<WebResponse<PostResponse[]>> {
+    const request: SearchPostRequest = {
+      title: title,
+      author: author,
+      category: category,
+      page: page || 1,
+      size: size || 10,
+    };
+    return this.postsService.search(user, request);
   }
 }

@@ -84,7 +84,7 @@ describe('UserController', () => {
 
   // UPDATE POST
 
-  describe('PACTH /api/post/current/:postId', () => {
+  describe('PACTH /api/posts/current/:postId', () => {
     beforeEach(async () => {
       await testService.deleteAll();
 
@@ -148,7 +148,7 @@ describe('UserController', () => {
   });
 
   // DELETE POST
-  describe('DELETE /api/post/current/:postId', () => {
+  describe('DELETE /api/posts/current/:postId', () => {
     beforeEach(async () => {
       await testService.deleteAll();
 
@@ -178,6 +178,130 @@ describe('UserController', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.data).toBe(true);
+    });
+  });
+
+  // SEARCH POST
+
+  describe('GET /api/posts', () => {
+    beforeEach(async () => {
+      await testService.deleteAll();
+
+      await testService.createUser();
+      await testService.createPost();
+    });
+
+    it('should be able to search posts', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/api/posts`)
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.length).toBe(3);
+    });
+
+    it('should be able to search posts by title', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/api/posts`)
+        .query({
+          title: 'ted',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.length).toBe(1);
+    });
+
+    it('should be able to search posts by title not found', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/api/posts`)
+        .query({
+          title: 'wrong',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.length).toBe(0);
+    });
+
+    it('should be able to search posts by author', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/api/posts`)
+        .query({
+          author: 'es',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.length).toBe(1);
+    });
+
+    it('should be able to search posts by author not found', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/api/posts`)
+        .query({
+          author: 'wrong',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.length).toBe(0);
+    });
+
+    it('should be able to search posts by category', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/api/posts`)
+        .query({
+          category: 'Teknologi',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.length).toBe(1);
+    });
+
+    it('should be able to search posts by category not found', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/api/posts`)
+        .query({
+          category: '88',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.length).toBe(0);
+    });
+
+    it('should be able to search posts with page', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/api/posts`)
+        .query({
+          size: 1,
+          page: 5,
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.length).toBe(0);
+      expect(response.body.paging.current_page).toBe(5);
+      expect(response.body.paging.total_page).toBe(3);
+      expect(response.body.paging.size).toBe(1);
     });
   });
 });
