@@ -73,4 +73,43 @@ export class UserController {
       data: true,
     };
   }
+
+  // UPLOAD PROFILE
+
+  // @Post('/profile')
+  // @UseInterceptors(
+  //   FileInterceptor('file', {
+  //     storage: diskStorage({
+  //       destination: './uploads/profile',
+  //       filename: (req, file, callback) => {
+  //         const uniqueSuffix = nanoid(8); // Menghasilkan string acak dengan panjang tertentu
+  //         const ext = extname(file.originalname);
+  //         const filename = `profile${uniqueSuffix}${ext}`;
+  //         callback(null, filename);
+  //       },
+  //     }),
+  //   }),
+  // )
+  // async uploadFile(
+  //   @UploadedFile(
+  //     new ParseFilePipeBuilder()
+  //       .addFileTypeValidator({
+  //         fileType: 'image/jpeg|image/png',
+  //       })
+  //       .build(),
+  //   )
+  //   file: Express.Multer.File,
+  // ) {
+  //   return this.userService.uploadFile(file);
+  // }
+
+  // @Get('/profile/:filename')
+  // async getFile(@Param('filename') filename: string, @Res() res: Response) {
+  //   const filePath = join(process.cwd(), 'uploads/profile', filename);
+  //   try {
+  //     return res.sendFile(filePath);
+  //   } catch (err) {
+  //     throw new HttpException(`Profil not found`, 404);
+  //   }
+  // }
 }

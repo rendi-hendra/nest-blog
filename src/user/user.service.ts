@@ -143,4 +143,13 @@ export class UserService {
       email: result.email,
     };
   }
+
+  // async uploadFile(user: User, file: Express.Multer.File) {
+  //   // Logika penyimpanan atau pengolahan file
+  //   console.log(file);
+  //   return {
+  //     message: 'File uploaded successfully!',
+  //     filename: file.originalname,
+  //   };
+  // }
 }

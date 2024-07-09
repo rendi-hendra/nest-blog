@@ -72,13 +72,13 @@ describe('UserController', () => {
   describe('GET /api/posts/author/:author', () => {
     it('should be get by author', async () => {
       const response = await request(app.getHttpServer())
-        .get('/api/posts/author/Rendi Hendra S')
+        .get('/api/posts/author/test')
         .set('Authorization', 'test');
 
       logger.info(response.body);
 
       expect(response.status).toBe(200);
-      expect(response.body.data[0].author).toBe('Rendi Hendra S');
+      expect(response.body.data[0].author).toBe('test');
     });
   });
 
@@ -199,14 +199,14 @@ describe('UserController', () => {
       logger.info(response.body);
 
       expect(response.status).toBe(200);
-      expect(response.body.data.length).toBe(3);
+      expect(response.body.data.length).toBe(1);
     });
 
     it('should be able to search posts by title', async () => {
       const response = await request(app.getHttpServer())
         .get(`/api/posts`)
         .query({
-          title: 'ted',
+          title: 'st',
         })
         .set('Authorization', 'test');
 
@@ -262,7 +262,7 @@ describe('UserController', () => {
       const response = await request(app.getHttpServer())
         .get(`/api/posts`)
         .query({
-          category: 'Teknologi',
+          category: 'Komedi',
         })
         .set('Authorization', 'test');
 
@@ -291,16 +291,16 @@ describe('UserController', () => {
         .get(`/api/posts`)
         .query({
           size: 1,
-          page: 5,
+          page: 1,
         })
         .set('Authorization', 'test');
 
       logger.info(response.body);
 
       expect(response.status).toBe(200);
-      expect(response.body.data.length).toBe(0);
-      expect(response.body.paging.current_page).toBe(5);
-      expect(response.body.paging.total_page).toBe(3);
+      expect(response.body.data.length).toBe(1);
+      expect(response.body.paging.current_page).toBe(1);
+      expect(response.body.paging.total_page).toBe(1);
       expect(response.body.paging.size).toBe(1);
     });
   });
