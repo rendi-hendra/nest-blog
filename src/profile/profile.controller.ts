@@ -63,7 +63,11 @@ export class ProfileController {
   }
 
   @Get('/:filename')
-  async getFile(@Param('filename') filename: string, @Res() res: Response) {
+  async getFile(
+    @Auth() user: User,
+    @Param('filename') filename: string,
+    @Res() res: Response,
+  ) {
     const filePath = join(process.cwd(), 'uploads/profile', filename);
     try {
       return res.sendFile(filePath);

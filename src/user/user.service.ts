@@ -13,6 +13,7 @@ import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import { User } from '@prisma/client';
+import { join } from 'path';
 
 @Injectable()
 export class UserService {
@@ -41,11 +42,13 @@ export class UserService {
 
     const user = await this.prismaService.user.create({
       data: registerRequest,
+      include: { role: true },
     });
 
     return {
       name: user.name,
       email: user.email,
+      role: user.role.name,
     };
   }
 
@@ -61,6 +64,7 @@ export class UserService {
       where: {
         email: loginRequest.email,
       },
+      include: { role: true },
     });
 
     if (!user) {
@@ -80,6 +84,7 @@ export class UserService {
       where: {
         email: loginRequest.email,
       },
+      include: { role: true },
       data: {
         token: uuid(),
       },
@@ -87,14 +92,22 @@ export class UserService {
     return {
       name: user.name,
       email: user.email,
+      role: user.role.name,
       token: user.token,
     };
   }
 
   async get(user: User): Promise<UserResponse> {
+    const role = await this.prismaService.role.findFirst({
+      where: {
+        id: user.roleId,
+      },
+    });
+
     return {
       name: user.name,
       email: user.email,
+      role: role.name,
     };
   }
 
@@ -120,12 +133,14 @@ export class UserService {
       where: {
         email: user.email,
       },
+      include: { role: true },
       data: user,
     });
 
     return {
       name: result.name,
       email: result.email,
+      role: result.role.name,
     };
   }
 
@@ -134,6 +149,7 @@ export class UserService {
       where: {
         email: user.email,
       },
+      include: { role: true },
       data: {
         token: null,
       },
@@ -141,15 +157,19 @@ export class UserService {
     return {
       name: result.name,
       email: result.email,
+      role: result.role.name,
     };
   }
 
-  // async uploadFile(user: User, file: Express.Multer.File) {
-  //   // Logika penyimpanan atau pengolahan file
-  //   console.log(file);
-  //   return {
-  //     message: 'File uploaded successfully!',
-  //     filename: file.originalname,
-  //   };
-  // }
+  async getProfile(user: User) {
+    const profile = await this.prismaService.profile.findFirst({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    const filePath = join(process.cwd(), 'uploads/profile', profile.name);
+
+    return filePath;
+  }
 }

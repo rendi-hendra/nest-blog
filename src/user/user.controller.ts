@@ -4,8 +4,10 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
   Patch,
   Post,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
@@ -17,6 +19,7 @@ import {
 import { WebResponse } from '../model/web.model';
 import { Auth } from '../common/auth.decorator';
 import { User } from '@prisma/client';
+import { Response } from 'express';
 
 @Controller('/api/users')
 export class UserController {
@@ -74,42 +77,17 @@ export class UserController {
     };
   }
 
-  // UPLOAD PROFILE
+  // GET PROFILE
 
-  // @Post('/profile')
-  // @UseInterceptors(
-  //   FileInterceptor('file', {
-  //     storage: diskStorage({
-  //       destination: './uploads/profile',
-  //       filename: (req, file, callback) => {
-  //         const uniqueSuffix = nanoid(8); // Menghasilkan string acak dengan panjang tertentu
-  //         const ext = extname(file.originalname);
-  //         const filename = `profile${uniqueSuffix}${ext}`;
-  //         callback(null, filename);
-  //       },
-  //     }),
-  //   }),
-  // )
-  // async uploadFile(
-  //   @UploadedFile(
-  //     new ParseFilePipeBuilder()
-  //       .addFileTypeValidator({
-  //         fileType: 'image/jpeg|image/png',
-  //       })
-  //       .build(),
-  //   )
-  //   file: Express.Multer.File,
-  // ) {
-  //   return this.userService.uploadFile(file);
-  // }
+  @Get('/profile')
+  @HttpCode(200)
+  async getProfile(@Auth() user: User, @Res() res: Response) {
+    try {
+      const profile = await this.userService.getProfile(user);
 
-  // @Get('/profile/:filename')
-  // async getFile(@Param('filename') filename: string, @Res() res: Response) {
-  //   const filePath = join(process.cwd(), 'uploads/profile', filename);
-  //   try {
-  //     return res.sendFile(filePath);
-  //   } catch (err) {
-  //     throw new HttpException(`Profil not found`, 404);
-  //   }
-  // }
+      return res.sendFile(profile);
+    } catch (err) {
+      throw new HttpException(`Profil not found`, 404);
+    }
+  }
 }
