@@ -109,7 +109,7 @@ Response Body (Failed) :
 
 ## Update Role User
 
-Endpoint : PUT /api/roles/user/:userId
+Endpoint : PATCH /api/roles/user/:userId
 
 Role : Super Admin
 
