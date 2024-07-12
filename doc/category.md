@@ -1,8 +1,9 @@
-# Category API Spec
+# Category API Spec.
 
 ## Create Category
 
 Endpoint : POST /api/categories
+
 Role : Admin, Super Admin
 
 Headers :
@@ -72,6 +73,7 @@ Response Body (Failed) :
 ## Update Category
 
 Endpoint : PUT /api/categories/:categoryId
+
 Role : Admin, Super Admin
 
 Headers :
@@ -108,6 +110,7 @@ Response Body (Failed) :
 ## Remove Posts
 
 Endpoint : DELETE /api/categories/:categoryId
+
 Role : Admin, Super Admin
 
 Headers :
