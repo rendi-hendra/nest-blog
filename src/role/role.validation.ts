@@ -7,4 +7,8 @@ export class RoleValidation {
   static readonly UPDATE: ZodType = z.object({
     name: z.string().min(1).max(100).optional(),
   });
+
+  static readonly UPDATE_ROLE: ZodType = z.object({
+    roleId: z.number().min(1).optional(),
+  });
 }

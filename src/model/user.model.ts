@@ -1,6 +1,8 @@
 export class UserResponse {
+  id?: number;
   name: string;
   email: string;
+  roleId?: number;
   role: string;
   token?: string;
 }

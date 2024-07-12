@@ -6,6 +6,7 @@ import {
   HttpCode,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
   UseGuards,
@@ -16,10 +17,12 @@ import {
   CreateRoleRequest,
   RoleResponse,
   UpdateRoleRequest,
+  UpdateRoleUserRequest,
 } from '../model/role.model';
 import { WebResponse } from '../model/web.model';
 import { RoleGuard } from '../common/role.guard';
 import { AuthGuard } from '../common/auth.guard';
+import { UserResponse } from 'src/model/user.model';
 
 @UseGuards(RoleGuard)
 @Controller('/api/roles')
@@ -57,6 +60,22 @@ export class RoleController {
   ): Promise<WebResponse<RoleResponse>> {
     request.id = roleId;
     const result = await this.roleService.update(request);
+    return {
+      data: result,
+    };
+  }
+
+  @Patch('/users/:userId')
+  @HttpCode(200)
+  @Roles(['Super Admin'])
+  async updateRoleUser(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Body() request: UpdateRoleUserRequest,
+  ): Promise<WebResponse<UserResponse>> {
+    request.userId = userId;
+
+    const result = await this.roleService.updateRoleUser(request);
+
     return {
       data: result,
     };

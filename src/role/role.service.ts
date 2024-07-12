@@ -7,9 +7,11 @@ import {
   CreateRoleRequest,
   RoleResponse,
   UpdateRoleRequest,
+  UpdateRoleUserRequest,
 } from '../model/role.model';
 import { RoleValidation } from './role.validation';
 import { Role } from '@prisma/client';
+import { UserResponse } from '../model/user.model';
 
 @Injectable()
 export class RoleService {
@@ -100,6 +102,52 @@ export class RoleService {
     return {
       id: role.id,
       name: role.name,
+    };
+  }
+
+  async updateRoleUser(request: UpdateRoleUserRequest): Promise<UserResponse> {
+    const updateRequest: UpdateRoleUserRequest =
+      this.validationService.validate(RoleValidation.UPDATE_ROLE, request);
+
+    let user = await this.prismaService.user.findFirst({
+      where: {
+        id: request.userId,
+      },
+      include: {
+        role: true,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
+
+    const role = await this.prismaService.role.findFirst({
+      where: {
+        id: request.roleId,
+      },
+    });
+
+    if (!role) {
+      throw new HttpException('Role not found', 404);
+    }
+
+    user = await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      include: {
+        role: true,
+      },
+      data: updateRequest,
+    });
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      roleId: user.roleId,
+      role: user.role.name,
     };
   }
 
