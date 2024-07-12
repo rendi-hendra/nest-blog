@@ -1,4 +1,4 @@
-# Category API Spec
+# Category API Spec.
 
 ## Create Category
 
