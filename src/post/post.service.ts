@@ -295,7 +295,23 @@ export class PostService {
     });
 
     return {
-      data: post.map((post) => this.toPostResponse(post)),
+      data: post.map((post) => {
+        return {
+          id: post.id,
+          title: post.title,
+          body:
+            post.body.length > 200
+              ? post.body.substring(0, 400) + '...'
+              : post.body,
+          slug: post.slug,
+          userId: post.userId,
+          author: post.user.name,
+          categoryId: post.categoryId,
+          category: post.category.name,
+          createdAt: post.createdAt,
+          updateAt: post.updateAt,
+        };
+      }),
       paging: {
         current_page: searchRequest.page,
         size: searchRequest.size,
