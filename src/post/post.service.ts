@@ -283,6 +283,9 @@ export class PostService {
       },
       take: searchRequest.size,
       skip: skip,
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     const total = await this.prismaService.post.count({
