@@ -4,7 +4,6 @@ import {
   Get,
   HttpCode,
   HttpException,
-  Param,
   ParseFilePipeBuilder,
   Post,
   Res,
@@ -62,13 +61,25 @@ export class ProfileController {
     };
   }
 
-  @Get('/:filename')
-  async getFile(
-    @Auth() user: User,
-    @Param('filename') filename: string,
-    @Res() res: Response,
-  ) {
-    const filePath = join(process.cwd(), 'uploads/profile', filename);
+  // @Get('/:filename')
+  // async getFile(
+  //   @Auth() user: User,
+  //   @Param('filename') filename: string,
+  //   @Res() res: Response,
+  // ) {
+  //   const filePath = join(process.cwd(), 'uploads/profile', filename);
+  //   try {
+  //     return res.sendFile(filePath);
+  //   } catch (err) {
+  //     throw new HttpException(`Profil not found`, 404);
+  //   }
+  // }
+
+  @Get('/current')
+  @HttpCode(200)
+  async get(@Auth() user: User, @Res() res: Response) {
+    const result = await this.profileService.getProfile(user);
+    const filePath = join(process.cwd(), 'uploads/profile', result.name);
     try {
       return res.sendFile(filePath);
     } catch (err) {

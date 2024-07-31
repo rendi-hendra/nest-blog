@@ -21,10 +21,6 @@ export class ProfileService {
     file: Express.Multer.File,
   ): Promise<ProfileResponse> {
     this.logger.debug(`ProfileService.create(${JSON.stringify(file)})`);
-    // const createRequest: createProfileRequest = this.validationService.validate(
-    //   ProfileValidation.CREATE,
-    //   request,
-    // );
 
     const totalProfileWithSameUserId = await this.prismaService.profile.count({
       where: {
@@ -83,6 +79,20 @@ export class ProfileService {
         userId: profile.userId,
       };
     }
+  }
+
+  async getProfile(user: User) {
+    const profile = await this.prismaService.profile.findFirst({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    return {
+      id: profile.id,
+      name: profile.name,
+      userId: profile.userId,
+    };
   }
 
   async delete(user: User): Promise<ProfileResponse> {
